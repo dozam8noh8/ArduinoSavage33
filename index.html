@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+        <head>
+        <script type="text/javascript" src="zepto.min.js"></script>
+          <script type="text/javascript">
+                function refresh() {
+                        $('#content').load('/arduino/temperature');
+                }
+                function startBlink(){
+                        console.log("STARTING BLINK");
+                        $.get('/arduino/STARTBLINK');
+                }
+                function stopBlink(){
+                        console.log("STOPPING BLINK");
+                        $.get('/arduino/STOPBLINK');
+                }
+                function setAlarmValue(){
+                        alarm1box = document.getElementById("AlarmVal1");
+                        alarmnumbox = document.getElementById("AlarmNumber");
+                        alarmnumval = parseInt(alarmnumbox.value);
+                        a1val = parseFloat(alarm1box.value);
+                        console.log("Setting value" + a1val);
+                        loadStr = "setalarm" + "::" + alarmnumval + "::" + a1val + "E";
+                        $('#owenSpan').load('/arduino/'+loadStr);
+                }
+</script>
+
+        </head>
+        <body onload="setInterval(refresh, 5000);">
+                <button type="button" onclick="startBlink()">STARTBLINK</button>
+                <button type="button" onclick="stopBlink()">STOPBLINK</button>
+                <span id="content">0</span>
+                <div>
+                <label for="Alarm Number">Alarm Number</label>
+                <input id="AlarmNumber" value="0"> </input>
+                <label for="AlarmVal1">Alarm Value</label>
+                <input id="AlarmVal1" value="1"> </input>
+                <button type="button" onclick="setAlarmValue()">SET VALUE</button>
+                <span id="owenSpan">OwenLoading</span>
+
+        </body>
+</html>
+
+
+

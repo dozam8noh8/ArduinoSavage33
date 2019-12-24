@@ -58,6 +58,8 @@ String startString;
 long hits = 0;
 double alarmVal = 0; //should probably initialise outside of loop
 double alarmNum = 0;
+float v0alarmsetpoint = 0.5;
+float v1alarmsetpoint = 2.0;
 
 void setup() {
   
@@ -112,6 +114,21 @@ void loop() {
 
     if (command.startsWith("setalarm")){
       parseAlarmString(client, command, &alarmNum, &alarmVal);
+      switch((int)(alarmNum)){
+          case 1:
+            v0alarmsetpoint = alarmVal;
+            client.println("Set v0alarm setpoint to ");
+            client.println(alarmVal);
+            break;
+
+          case 2:
+            v1alarmsetpoint = alarmVal;
+            break;
+            
+          default:
+            //client.println("Not a valid number");
+            break;
+      }
       client.println("Finished function");
       client.println(alarmVal);
     }
@@ -276,7 +293,7 @@ client.print("</blink>"); //MDS: not sure if blink works on html???
           
       
       
-      if(voltage0 > 0.5f){    //MDS Doing some testing here to see if this prints out. 1.0 was previously 2.0
+      if(voltage0 > v0alarmsetpoint){    //MDS Doing some testing here to see if this prints out. 1.0 was previously 2.0
         digitalWrite(13, HIGH); //MDS: set buzzer to alarm
         client.println("<font style='color:red'>"); //MDS added to test fonts etc
         client.print("<br>High Alarm on Port Engine Temp: "); 
@@ -292,7 +309,7 @@ client.print("</blink>"); //MDS: not sure if blink works on html???
       }
       
 
- if(voltage1 > 2.0f){
+ if(voltage1 > v1alarmsetpoint){
         digitalWrite(13, HIGH);
         client.println("<font style='color:red'>"); //MDS added to test fonts etc
         client.print("HI ALARM D13 Voltage on A1: Stb Engine Temp: ");
@@ -459,24 +476,5 @@ client.print("</blink>"); //MDS: not sure if blink works on html???
       //convert to string first so we can use toDouble string method.
       *alarmNum = (String(alarmNumHolder)).toDouble(); //should make this an int for space reasons.
       *alarmVal = (String(alarmValHolder)).toDouble();
-
-
-      double dummyVal = 0;
-      switch((int)(*alarmNum)){
-          case 1:
-            client.println("Setting dummy var to input val");
-            dummyVal = *alarmVal;
-            client.println("dummy val is");
-            client.println(*alarmVal);
-            break;
-
-          case 2:
-            //client.println("Insert action here.");
-            break;
-            
-          default:
-            //client.println("Not a valid number");
-            break;
-      }
        
   }
